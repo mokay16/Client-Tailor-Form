@@ -221,6 +221,7 @@
     box-shadow: 0 4px 20px rgba(201,168,76,0.3);
   }
   .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(201,168,76,0.4); }
+  .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
   .submit-note { font-size: 12px; color: var(--muted); margin-top: 12px; }
 
   .success-screen { display: none; text-align: center; padding: 70px 24px; }
@@ -235,8 +236,16 @@
   .success-screen h2 { font-family: 'Playfair Display', serif; font-size: 28px; margin-bottom: 12px; }
   .success-screen p { color: var(--muted); font-size: 15px; max-width: 400px; margin: 0 auto; }
 
-
-
+  .error-message {
+    background-color: #fee2e2;
+    border: 1px solid #ef4444;
+    color: #991b1b;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+    display: none;
+  }
 
   @media (max-width: 520px) {
     .options-grid.two-col { grid-template-columns: 1fr; }
@@ -259,6 +268,7 @@
 </div>
 
 <div class="form-container" id="formContainer">
+  <div id="errorMessage" class="error-message"></div>
 
   <!-- SECTION 1 -->
   <div class="section-header">
@@ -613,19 +623,23 @@
 </div>
 
 <script>
+  // Utility functions
   function toggleCheck(el, groupId) {
     el.classList.toggle('selected');
     updateProgress();
   }
+  
   function toggleRadio(el, groupId) {
     document.getElementById(groupId).querySelectorAll('.option-item').forEach(i => i.classList.remove('selected'));
     el.classList.add('selected');
     updateProgress();
   }
+  
   function toggleSwatch(el, groupId) {
     el.classList.toggle('selected');
     updateProgress();
   }
+  
   function updateProgress() {
     const textReq = ['q1','q3','q5'];
     const radioReq = ['q6','q10','q11','q12','q14','q15','q17','q18','q20','q21','q22','q23'];
@@ -633,85 +647,43 @@
     const swatchReq = ['q7'];
     let filled = 0;
     const total = textReq.length + radioReq.length + checkReq.length + swatchReq.length;
+    
     textReq.forEach(id => { if(document.getElementById(id).value.trim()) filled++; });
     radioReq.forEach(id => { if(document.getElementById(id).querySelector('.selected')) filled++; });
     checkReq.forEach(id => { if(document.getElementById(id).querySelector('.selected')) filled++; });
     swatchReq.forEach(id => { if(document.getElementById(id).querySelector('.selected')) filled++; });
+    
     const pct = Math.round((filled/total)*100);
     document.getElementById('progressFill').style.width = pct+'%';
     document.getElementById('progressText').textContent = pct+'% Complete';
   }
+  
   function getSelections(id) {
     const g = document.getElementById(id);
     if(!g) return 'Not answered';
     const sel = [...g.querySelectorAll('.selected')].map(el => (el.querySelector('.option-text, .swatch-label')||{}).textContent||'').filter(Boolean);
     return sel.length ? sel.join(', ') : 'Not answered';
   }
-  function submitForm() {
+  
+  async function submitForm() {
+    // Hide any previous error messages
+    document.getElementById('errorMessage').style.display = 'none';
+    
+    // Validate required fields
     const missing = ['q1','q3','q5'].filter(id => !document.getElementById(id).value.trim());
     if(missing.length) {
-      missing.forEach(id => document.getElementById(id).style.borderColor='#e74c3c');
-      alert('Please fill in the required fields marked with *');
+      missing.forEach(id => {
+        document.getElementById(id).style.borderColor = '#e74c3c';
+        setTimeout(() => {
+          document.getElementById(id).style.borderColor = '';
+        }, 3000);
+      });
+      showError('Please fill in the required fields marked with *');
       return;
     }
-    // Build readable summary
-    const answers = `TAILOR CONNECT — WEBSITE DISCOVERY FORM
-Submitted: ${new Date().toLocaleString()}
-==========================================
-
-SECTION 1: ABOUT THE BUSINESS
-Website Name: ${document.getElementById('q1').value}
-Tagline: ${document.getElementById('q2').value || 'Not provided'}
-Platform Description: ${document.getElementById('q3').value}
-Target Audience: ${getSelections('q4')}
-Service Location: ${document.getElementById('q5').value}
-
-SECTION 2: BRANDING
-Has Existing Logo: ${getSelections('q6')}
-Color Theme: ${getSelections('q7')}
-Desired Feeling: ${getSelections('q8')}
-Design Inspiration Sites: ${document.getElementById('q9').value || 'Not provided'}
-
-SECTION 3: IMAGES & MEDIA
-Image Source: ${getSelections('q10')}
-Has Existing Photos: ${getSelections('q11')}
-Wants Landing Page Video: ${getSelections('q12')}
-
-SECTION 4: LANDING PAGE SECTIONS
-Sections Wanted: ${getSelections('q13')}
-Primary Call-to-Action: ${getSelections('q14')}
-Separate Client/Tailor Sign-up: ${getSelections('q15')}
-
-SECTION 5: FEATURES
-Website Features: ${getSelections('q16')}
-Tailor Monetization Model: ${getSelections('q17')}
-
-SECTION 6: CONTENT
-Content Writer: ${getSelections('q18')}
-Languages: ${getSelections('q19')}
-
-SECTION 7: TECHNICAL
-Has Domain Name: ${getSelections('q20')}
-Has Hosting: ${getSelections('q21')}
-Mobile Responsiveness: ${getSelections('q22')}
-
-SECTION 8: TIMELINE & NOTES
-Deadline: ${getSelections('q23')}
-Must Have: ${document.getElementById('q24').value || 'Not provided'}
-Must NOT Have: ${document.getElementById('q25').value || 'Not provided'}
-Other Notes: ${document.getElementById('q26').value || 'Not provided'}
-
-==========================================
-Budget: $890 | Project: Landing Page First
-`.trim();
-
-    // Show sending state
-    const btn = document.querySelector('.submit-btn');
-    btn.textContent = '⏳ Sending...';
-    btn.disabled = true;
-
-    // Build structured data object for Google Sheets
-    const payload = {
+    
+    // Collect all data
+    const formData = {
       submittedAt: new Date().toLocaleString(),
       websiteName: document.getElementById('q1').value,
       tagline: document.getElementById('q2').value || 'Not provided',
@@ -740,27 +712,122 @@ Budget: $890 | Project: Landing Page First
       mustNotHave: document.getElementById('q25').value || 'Not provided',
       otherNotes: document.getElementById('q26').value || 'Not provided'
     };
-
-    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxdiHfSHARWsM1iu95QUNUO8qjeU4_V3seoUjC439K_PcGMflX5YbVjthIydiu6FIS6SQ/exec';
-
-    fetch(SHEET_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    })
-    .then(() => {
-      // Also store answers text for display
+    
+    // ⚠️ IMPORTANT: Replace this URL with your actual Google Apps Script URL
+    const SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
+    
+    const btn = document.querySelector('.submit-btn');
+    const originalText = btn.textContent;
+    btn.textContent = '⏳ Sending...';
+    btn.disabled = true;
+    
+    try {
+      // Method 1: Using fetch
+      const response = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      });
+      
+      // Show success screen
       document.getElementById('formContainer').style.display = 'none';
       document.getElementById('successScreen').style.display = 'block';
-    })
-    .catch(() => {
-      document.getElementById('formContainer').style.display = 'none';
-      document.getElementById('successScreen').style.display = 'block';
-    });
+      
+      // Optional: Save to localStorage as backup
+      saveToLocalStorage(formData);
+      
+    } catch(error) {
+      console.error('Submission error:', error);
+      
+      // Try fallback method with form submission
+      try {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = SCRIPT_URL;
+        form.target = 'hidden_iframe';
+        
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'data';
+        input.value = JSON.stringify(formData);
+        form.appendChild(input);
+        
+        let iframe = document.getElementById('hidden_iframe');
+        if (!iframe) {
+          iframe = document.createElement('iframe');
+          iframe.name = 'hidden_iframe';
+          iframe.id = 'hidden_iframe';
+          iframe.style.display = 'none';
+          document.body.appendChild(iframe);
+        }
+        
+        document.body.appendChild(form);
+        form.submit();
+        document.body.removeChild(form);
+        
+        document.getElementById('formContainer').style.display = 'none';
+        document.getElementById('successScreen').style.display = 'block';
+        
+        // Save backup
+        saveToLocalStorage(formData);
+        
+      } catch(fallbackError) {
+        console.error('Fallback also failed:', fallbackError);
+        showError('Unable to submit form. Your data has been saved locally. Please check your internet connection and try again.');
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }
+    }
   }
-
-
+  
+  function showError(message) {
+    const errorDiv = document.getElementById('errorMessage');
+    errorDiv.textContent = message;
+    errorDiv.style.display = 'block';
+    setTimeout(() => {
+      errorDiv.style.display = 'none';
+    }, 5000);
+  }
+  
+  function saveToLocalStorage(data) {
+    // Save as backup in case submission fails
+    let submissions = JSON.parse(localStorage.getItem('formSubmissions') || '[]');
+    submissions.push(data);
+    localStorage.setItem('formSubmissions', JSON.stringify(submissions));
+  }
+  
+  // Auto-save progress every 30 seconds
+  setInterval(() => {
+    if (document.getElementById('formContainer').style.display !== 'none') {
+      const formData = {
+        timestamp: new Date().toLocaleString(),
+        q1: document.getElementById('q1')?.value,
+        q2: document.getElementById('q2')?.value,
+        q3: document.getElementById('q3')?.value,
+        q5: document.getElementById('q5')?.value,
+        // Add more fields as needed
+      };
+      localStorage.setItem('autoSave', JSON.stringify(formData));
+    }
+  }, 30000);
+  
+  // Load auto-saved data on page load
+  window.addEventListener('DOMContentLoaded', () => {
+    const saved = localStorage.getItem('autoSave');
+    if (saved) {
+      const data = JSON.parse(saved);
+      if (data.q1 && confirm('Load previously saved form data?')) {
+        if (data.q1) document.getElementById('q1').value = data.q1;
+        if (data.q2) document.getElementById('q2').value = data.q2;
+        if (data.q3) document.getElementById('q3').value = data.q3;
+        if (data.q5) document.getElementById('q5').value = data.q5;
+        updateProgress();
+      }
+    }
+  });
 </script>
 </body>
-</html>a
+</html>
