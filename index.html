@@ -624,12 +624,16 @@
 <!-- SUCCESS -->
 <div class="success-screen" id="successScreen">
   <div class="success-icon">✓</div>
-  <h2>Thank You!</h2>
-  <p>Your answers have been compiled below. Copy them and send to your developer.</p>
-  <div class="results-box" id="resultsBox">
-    <pre id="resultsText"></pre>
+  <h2>All Done!</h2>
+  <p>Your answers have been received. Your developer will review everything and be in touch with you shortly. 🧵✨</p>
+  <div style="margin-top:28px; display:inline-block; background:rgba(201,168,76,0.1); border:1px solid rgba(201,168,76,0.3); border-radius:12px; padding:16px 28px;">
+    <div style="font-size:13px; color:var(--muted);">What happens next</div>
+    <div style="font-size:14px; color:var(--dark); margin-top:8px; line-height:1.8;">
+      📋 &nbsp;Your answers are saved<br>
+      🗂️ &nbsp;Developer reviews your brief<br>
+      📞 &nbsp;You will be contacted within 24hrs
+    </div>
   </div>
-  <button class="copy-btn" onclick="copyResults()">📋 Copy All Answers</button>
 </div>
 
 <script>
@@ -783,13 +787,7 @@ Budget: $890 | Project: Landing Page First
     });
   }
 
-  function copyResults() {
-    navigator.clipboard.writeText(document.getElementById('resultsText').textContent).then(() => {
-      const btn = document.querySelector('.copy-btn');
-      btn.textContent = '✅ Copied!';
-      setTimeout(() => btn.textContent = '📋 Copy All Answers', 2000);
-    });
-  }
+
 </script>
 </body>
 </html>
