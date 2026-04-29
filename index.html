@@ -595,110 +595,12 @@
     return sel.length ? sel.join(', ') : 'Not answered';
   }
   
-  function generateHTMLEmail(formData) {
-    return `<!DOCTYPE html>
-<html>
-<head>
-<style>
-  body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #1A1208; }
-  .container { max-width: 800px; margin: 0 auto; padding: 20px; }
-  .header { background: linear-gradient(135deg, #1A1208, #2C1F0E); color: #C9A84C; padding: 30px; text-align: center; border-radius: 15px 15px 0 0; }
-  .header h1 { margin: 0; font-size: 28px; }
-  .header p { margin: 10px 0 0; color: #E8C97A; }
-  .section { background: #FAF6EE; margin: 20px 0; padding: 20px; border-radius: 10px; border-left: 4px solid #C9A84C; }
-  .section-title { color: #7B4F2E; font-size: 20px; margin: 0 0 15px 0; padding-bottom: 10px; border-bottom: 2px solid #E2D5BC; }
-  .field { margin: 12px 0; }
-  .field-label { font-weight: bold; color: #2C1F0E; display: inline-block; min-width: 180px; }
-  .field-value { color: #1A1208; }
-  .badge { background: #C9A84C; color: #1A1208; padding: 5px 10px; border-radius: 5px; font-size: 12px; font-weight: bold; display: inline-block; margin-right: 10px; }
-  .footer { background: #1A1208; color: #E8C97A; text-align: center; padding: 20px; border-radius: 0 0 15px 15px; font-size: 12px; }
-  .highlight { background: #fff; padding: 15px; border-radius: 8px; margin: 15px 0; }
-  hr { border: none; border-top: 1px solid #E2D5BC; margin: 20px 0; }
-</style>
-</head>
-<body>
-<div class="container">
-  <div class="header">
-    <h1>🧵 Tailor Connect</h1>
-    <p>New Website Discovery Form Submission</p>
-    <p style="font-size: 12px; margin-top: 10px;">Submitted: ${formData.submissionDate}</p>
-  </div>
-  
-  <div class="section">
-    <div class="section-title">👤 Client Information</div>
-    <div class="field"><span class="field-label">Name:</span> <span class="field-value">${formData.clientName}</span></div>
-    <div class="field"><span class="field-label">Email:</span> <span class="field-value">${formData.clientEmail}</span></div>
-    <div class="field"><span class="field-label">Phone:</span> <span class="field-value">${formData.clientPhone}</span></div>
-  </div>
-  
-  <div class="section">
-    <div class="section-title">🏢 About Your Business</div>
-    <div class="field"><span class="field-label">Website Name:</span> <span class="field-value"><strong>${formData.websiteName}</strong></span></div>
-    <div class="field"><span class="field-label">Tagline:</span> <span class="field-value">${formData.tagline}</span></div>
-    <div class="field"><span class="field-label">Description:</span></div>
-    <div class="highlight">${formData.description.replace(/\n/g, '<br>')}</div>
-    <div class="field"><span class="field-label">Target Audience:</span> <span class="field-value">${formData.targetAudience}</span></div>
-    <div class="field"><span class="field-label">Location:</span> <span class="field-value">${formData.location}</span></div>
-  </div>
-  
-  <div class="section">
-    <div class="section-title">🎨 Branding & Visual Identity</div>
-    <div class="field"><span class="field-label">Logo Status:</span> <span class="field-value">${formData.hasLogo}</span></div>
-    <div class="field"><span class="field-label">Color Theme:</span> <span class="field-value">${formData.colorTheme}</span></div>
-    <div class="field"><span class="field-label">Desired Feeling:</span> <span class="field-value">${formData.feeling}</span></div>
-    <div class="field"><span class="field-label">Inspiration Sites:</span> <span class="field-value">${formData.inspirationSites}</span></div>
-  </div>
-  
-  <div class="section">
-    <div class="section-title">🖼️ Images & Media</div>
-    <div class="field"><span class="field-label">Image Source:</span> <span class="field-value">${formData.imageSource}</span></div>
-    <div class="field"><span class="field-label">Has Photos:</span> <span class="field-value">${formData.hasPhotos}</span></div>
-    <div class="field"><span class="field-label">Wants Video:</span> <span class="field-value">${formData.wantsVideo}</span></div>
-  </div>
-  
-  <div class="section">
-    <div class="section-title">📄 Landing Page</div>
-    <div class="field"><span class="field-label">Sections Wanted:</span> <span class="field-value">${formData.sectionsWanted}</span></div>
-    <div class="field"><span class="field-label">Primary CTA:</span> <span class="field-value">${formData.primaryCTA}</span></div>
-  </div>
-  
-  <div class="section">
-    <div class="section-title">⚙️ Features & Functionality</div>
-    <div class="field"><span class="field-label">Features Wanted:</span> <span class="field-value">${formData.featuresWanted}</span></div>
-    <div class="field"><span class="field-label">Timeline:</span> <span class="field-value">${formData.deadline}</span></div>
-  </div>
-  
-  ${formData.mustHave !== 'Not provided' ? `
-  <div class="section">
-    <div class="section-title">⭐ Must Have Features</div>
-    <div class="highlight">${formData.mustHave.replace(/\n/g, '<br>')}</div>
-  </div>
-  ` : ''}
-  
-  ${formData.otherNotes !== 'Not provided' ? `
-  <div class="section">
-    <div class="section-title">📝 Additional Notes</div>
-    <div class="highlight">${formData.otherNotes.replace(/\n/g, '<br>')}</div>
-  </div>
-  ` : ''}
-  
-  <div class="footer">
-    <p>📧 Reply to this email to contact the client directly</p>
-    <p>🔗 View all submissions in your form dashboard</p>
-    <p>✨ Tailor Connect - Website Discovery Platform</p>
-  </div>
-</div>
-</body>
-</html>`;
-  }
-  
   async function submitForm() {
     // Hide error message
     const errorDiv = document.getElementById('errorMessage');
     errorDiv.style.display = 'none';
     
-    // Validate required fields
-    const required = ['clientName', 'clientEmail', 'q1', 'q3', 'q5'];
+    // Validate required fields    const required = ['clientName', 'clientEmail', 'q1', 'q3', 'q5'];
     const missing = required.filter(id => !document.getElementById(id).value.trim());
     
     if(missing.length) {
@@ -747,8 +649,119 @@
       otherNotes: document.getElementById('q18').value || 'Not provided'
     };
     
-    // Generate HTML email
-    const htmlEmail = generateHTMLEmail(formData);
+    // Create HTML email with inline styles (for Gmail compatibility)
+    const htmlEmail = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tailor Connect Submission</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; background-color: #FAF6EE;">
+  <div style="max-width: 700px; margin: 20px auto; background-color: #ffffff; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+    
+    <!-- Header -->
+    <div style="background: linear-gradient(135deg, #1A1208, #2C1F0E); padding: 30px; text-align: center;">
+      <div style="font-size: 48px; margin-bottom: 10px;">🧵</div>
+      <h1 style="color: #C9A84C; margin: 0; font-size: 28px; font-family: 'Playfair Display', Georgia, serif;">Tailor Connect</h1>
+      <p style="color: #E8C97A; margin: 10px 0 0; font-size: 14px;">Website Discovery Form Submission</p>
+      <p style="color: #C9A84C; margin: 15px 0 0; font-size: 12px; background: rgba(201,168,76,0.2); display: inline-block; padding: 5px 12px; border-radius: 20px;">📅 ${formData.submissionDate}</p>
+    </div>
+    
+    <!-- Client Section -->
+    <div style="padding: 25px; border-bottom: 1px solid #E2D5BC;">
+      <div style="display: inline-block; background: #C9A84C; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; color: #1A1208; margin-bottom: 15px;">👤 CLIENT INFORMATION</div>
+      <table style="width: 100%; border-collapse: collapse;">
+        <tr>
+          <td style="padding: 8px 0; width: 120px;"><strong style="color: #2C1F0E;">Name:</strong></td>
+          <td style="padding: 8px 0; color: #1A1208;">${formData.clientName}</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0;"><strong style="color: #2C1F0E;">Email:</strong></td>
+          <td style="padding: 8px 0; color: #1A1208;"><a href="mailto:${formData.clientEmail}" style="color: #C9A84C;">${formData.clientEmail}</a></td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0;"><strong style="color: #2C1F0E;">Phone:</strong></td>
+          <td style="padding: 8px 0; color: #1A1208;">${formData.clientPhone}</td>
+        </tr>
+      </table>
+    </div>
+    
+    <!-- Business Section -->
+    <div style="padding: 25px; border-bottom: 1px solid #E2D5BC;">
+      <div style="display: inline-block; background: #C9A84C; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; color: #1A1208; margin-bottom: 15px;">🏢 ABOUT THE BUSINESS</div>
+      <table style="width: 100%; border-collapse: collapse;">
+        <tr><td style="padding: 8px 0; width: 140px;"><strong style="color: #2C1F0E;">Website Name:</strong></td><td style="padding: 8px 0; color: #C9A84C; font-weight: bold;">${formData.websiteName}</td></tr>
+        <tr><td style="padding: 8px 0;"><strong style="color: #2C1F0E;">Tagline:</strong></td><td style="padding: 8px 0; color: #1A1208;">${formData.tagline}</td></tr>
+        <tr><td style="padding: 8px 0; vertical-align: top;"><strong style="color: #2C1F0E;">Description:</strong></td><td style="padding: 8px 0; color: #1A1208; background: #FAF6EE; padding: 10px; border-radius: 8px;">${formData.description.replace(/\n/g, '<br>')}</td></tr>
+        <tr><td style="padding: 8px 0;"><strong style="color: #2C1F0E;">Target Audience:</strong></td><td style="padding: 8px 0; color: #1A1208;">${formData.targetAudience}</td></tr>
+        <tr><td style="padding: 8px 0;"><strong style="color: #2C1F0E;">Location:</strong></td><td style="padding: 8px 0; color: #1A1208;">${formData.location}</td></tr>
+      </table>
+    </div>
+    
+    <!-- Branding Section -->
+    <div style="padding: 25px; border-bottom: 1px solid #E2D5BC;">
+      <div style="display: inline-block; background: #C9A84C; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; color: #1A1208; margin-bottom: 15px;">🎨 BRANDING</div>
+      <table style="width: 100%; border-collapse: collapse;">
+        <tr><td style="padding: 8px 0; width: 140px;"><strong style="color: #2C1F0E;">Logo Status:</strong></td><td style="padding: 8px 0; color: #1A1208;">${formData.hasLogo}</td></tr>
+        <tr><td style="padding: 8px 0;"><strong style="color: #2C1F0E;">Color Theme:</strong></td><td style="padding: 8px 0; color: #1A1208;">${formData.colorTheme}</td></tr>
+        <tr><td style="padding: 8px 0;"><strong style="color: #2C1F0E;">Desired Feeling:</strong></td><td style="padding: 8px 0; color: #1A1208;">${formData.feeling}</td></tr>
+        <tr><td style="padding: 8px 0;"><strong style="color: #2C1F0E;">Inspiration:</strong></td><td style="padding: 8px 0; color: #1A1208;">${formData.inspirationSites}</td></tr>
+      </table>
+    </div>
+    
+    <!-- Media Section -->
+    <div style="padding: 25px; border-bottom: 1px solid #E2D5BC;">
+      <div style="display: inline-block; background: #C9A84C; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; color: #1A1208; margin-bottom: 15px;">🖼️ MEDIA</div>
+      <table style="width: 100%; border-collapse: collapse;">
+        <tr><td style="padding: 8px 0; width: 140px;"><strong style="color: #2C1F0E;">Image Source:</strong></td><td style="padding: 8px 0; color: #1A1208;">${formData.imageSource}</td></tr>
+        <tr><td style="padding: 8px 0;"><strong style="color: #2C1F0E;">Has Photos:</strong></td><td style="padding: 8px 0; color: #1A1208;">${formData.hasPhotos}</td></tr>
+        <tr><td style="padding: 8px 0;"><strong style="color: #2C1F0E;">Wants Video:</strong></td><td style="padding: 8px 0; color: #1A1208;">${formData.wantsVideo}</td></tr>
+      </table>
+    </div>
+    
+    <!-- Landing Page Section -->
+    <div style="padding: 25px; border-bottom: 1px solid #E2D5BC;">
+      <div style="display: inline-block; background: #C9A84C; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; color: #1A1208; margin-bottom: 15px;">📄 LANDING PAGE</div>
+      <table style="width: 100%; border-collapse: collapse;">
+        <tr><td style="padding: 8px 0; width: 140px;"><strong style="color: #2C1F0E;">Sections:</strong></td><td style="padding: 8px 0; color: #1A1208;">${formData.sectionsWanted}</td></tr>
+        <tr><td style="padding: 8px 0;"><strong style="color: #2C1F0E;">Primary CTA:</strong></td><td style="padding: 8px 0; color: #1A1208;">${formData.primaryCTA}</td></tr>
+      </table>
+    </div>
+    
+    <!-- Features Section -->
+    <div style="padding: 25px; border-bottom: 1px solid #E2D5BC;">
+      <div style="display: inline-block; background: #C9A84C; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; color: #1A1208; margin-bottom: 15px;">⚙️ FEATURES</div>
+      <table style="width: 100%; border-collapse: collapse;">
+        <tr><td style="padding: 8px 0; width: 140px;"><strong style="color: #2C1F0E;">Features Wanted:</strong></td><td style="padding: 8px 0; color: #1A1208;">${formData.featuresWanted}</td></tr>
+        <tr><td style="padding: 8px 0;"><strong style="color: #2C1F0E;">Timeline:</strong></td><td style="padding: 8px 0; color: #1A1208;">${formData.deadline}</td></tr>
+      </table>
+    </div>
+    
+    ${formData.mustHave !== 'Not provided' ? `
+    <!-- Must Have Section -->
+    <div style="padding: 25px; border-bottom: 1px solid #E2D5BC;">
+      <div style="display: inline-block; background: #C9A84C; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; color: #1A1208; margin-bottom: 15px;">⭐ MUST HAVE</div>
+      <div style="background: #FFF8F0; padding: 15px; border-radius: 8px; border-left: 4px solid #C9A84C; color: #1A1208;">${formData.mustHave.replace(/\n/g, '<br>')}</div>
+    </div>
+    ` : ''}
+    
+    ${formData.otherNotes !== 'Not provided' ? `
+    <!-- Notes Section -->
+    <div style="padding: 25px;">
+      <div style="display: inline-block; background: #C9A84C; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; color: #1A1208; margin-bottom: 15px;">📝 ADDITIONAL NOTES</div>
+      <div style="background: #FFF8F0; padding: 15px; border-radius: 8px; border-left: 4px solid #C9A84C; color: #1A1208;">${formData.otherNotes.replace(/\n/g, '<br>')}</div>
+    </div>
+    ` : ''}
+    
+    <!-- Footer -->
+    <div style="background: #1A1208; padding: 20px; text-align: center;">
+      <p style="color: #E8C97A; margin: 0 0 10px; font-size: 12px;">📧 Reply to this email to contact ${formData.clientName}</p>
+      <p style="color: #8C7A5E; margin: 0; font-size: 11px;">Tailor Connect - Website Discovery Platform</p>
+    </div>
+  </div>
+</body>
+</html>`;
     
     const btn = document.querySelector('.submit-btn');
     const originalText = btn.textContent;
@@ -758,7 +771,7 @@
     btn.disabled = true;
     loadingOverlay.style.display = 'flex';
     
-    // Send to FormSubmit with HTML format
+    // Send using FormSubmit
     try {
       const response = await fetch('https://formsubmit.co/ajax/brianmokha6591@gmail.com', {
         method: 'POST',
@@ -769,7 +782,7 @@
           subject: `✨ NEW: Website Discovery Form - ${formData.clientName}`,
           message: htmlEmail,
           _captcha: 'false',
-          _template: 'table'
+          _replyto: formData.clientEmail
         })
       });
       
@@ -788,21 +801,10 @@
       console.error('Submission error:', error);
       loadingOverlay.style.display = 'none';
       
-      // Fallback - plain text version
-      let plainText = `TAILOR CONNECT - NEW FORM SUBMISSION\n`;
-      plainText += `Submitted: ${formData.submissionDate}\n`;
-      plainText += `Client: ${formData.clientName} (${formData.clientEmail})\n\n`;
-      plainText += `Website: ${formData.websiteName}\n`;
-      plainText += `Description: ${formData.description}\n\n`;
-      plainText += `Check your email client for full HTML version.`;
-      
-      const mailtoLink = `mailto:brianmokha6591@gmail.com?subject=New Form Submission - ${formData.clientName}&body=${encodeURIComponent(plainText)}`;
-      
       errorDiv.innerHTML = `
         <strong>⚠️ Unable to submit automatically</strong><br><br>
-        Click below to send manually:<br>
-        <a href="${mailtoLink}" style="color: var(--gold); margin-top: 10px; display: inline-block;">📧 Click here to send email</a>
-        <br><br>Your data has been saved locally.
+        Please try again or contact support if the issue persists.<br>
+        <small>Your data has been saved locally.</small>
       `;
       errorDiv.style.display = 'block';
       btn.textContent = originalText;
