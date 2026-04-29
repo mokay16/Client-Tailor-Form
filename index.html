@@ -247,6 +247,38 @@
     display: none;
   }
 
+  .loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  .loading-spinner {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    text-align: center;
+  }
+  .loading-spinner::after {
+    content: '';
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--gold);
+    border-top-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
   @media (max-width: 520px) {
     .options-grid.two-col { grid-template-columns: 1fr; }
     .color-swatches { justify-content: center; }
@@ -254,6 +286,12 @@
 </style>
 </head>
 <body>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-spinner">
+    <p>Saving your answers...</p>
+  </div>
+</div>
 
 <div class="hero">
   <div class="hero-tag">🧵 Website Discovery Form</div>
@@ -270,7 +308,7 @@
 <div class="form-container" id="formContainer">
   <div id="errorMessage" class="error-message"></div>
 
-  <!-- SECTION 1 -->
+  <!-- SECTION 1 - About Your Business -->
   <div class="section-header">
     <div class="section-number">1</div>
     <div class="section-title">About Your Business</div>
@@ -313,7 +351,7 @@
     <input type="text" id="q5" placeholder="e.g. Nairobi, Mombasa, Kenya-wide, East Africa..." oninput="updateProgress()">
   </div>
 
-  <!-- SECTION 2 -->
+  <!-- SECTION 2 - Branding -->
   <div class="section-header">
     <div class="section-number">2</div>
     <div class="section-title">Branding & Visual Identity</div>
@@ -333,38 +371,14 @@
     <div class="field-label">Preferred color theme <span class="req">*</span></div>
     <div class="field-hint">Select all that appeal to you</div>
     <div class="color-swatches" id="q7">
-      <div class="swatch" onclick="toggleSwatch(this,'q7')">
-        <div class="swatch-dot" style="background:linear-gradient(135deg,#1a1208,#C9A84C)"></div>
-        <div class="swatch-label">Black & Gold</div>
-      </div>
-      <div class="swatch" onclick="toggleSwatch(this,'q7')">
-        <div class="swatch-dot" style="background:linear-gradient(135deg,#fff,#F5EDE0)"></div>
-        <div class="swatch-label">White & Cream</div>
-      </div>
-      <div class="swatch" onclick="toggleSwatch(this,'q7')">
-        <div class="swatch-dot" style="background:linear-gradient(135deg,#1B3A6B,#7DA7D9)"></div>
-        <div class="swatch-label">Navy & Blue</div>
-      </div>
-      <div class="swatch" onclick="toggleSwatch(this,'q7')">
-        <div class="swatch-dot" style="background:linear-gradient(135deg,#8B5E3C,#D4A07A)"></div>
-        <div class="swatch-label">Earthy Tones</div>
-      </div>
-      <div class="swatch" onclick="toggleSwatch(this,'q7')">
-        <div class="swatch-dot" style="background:linear-gradient(135deg,#C0392B,#8E44AD)"></div>
-        <div class="swatch-label">Bold & Vibrant</div>
-      </div>
-      <div class="swatch" onclick="toggleSwatch(this,'q7')">
-        <div class="swatch-dot" style="background:linear-gradient(135deg,#2ecc71,#16a085)"></div>
-        <div class="swatch-label">Green & Teal</div>
-      </div>
-      <div class="swatch" onclick="toggleSwatch(this,'q7')">
-        <div class="swatch-dot" style="background:linear-gradient(135deg,#F8BBD0,#CE93D8)"></div>
-        <div class="swatch-label">Pink & Purple</div>
-      </div>
-      <div class="swatch" onclick="toggleSwatch(this,'q7')">
-        <div class="swatch-dot" style="background:linear-gradient(135deg,#ddd,#aaa)"></div>
-        <div class="swatch-label">Open to Suggestions</div>
-      </div>
+      <div class="swatch" onclick="toggleSwatch(this,'q7')"><div class="swatch-dot" style="background:linear-gradient(135deg,#1a1208,#C9A84C)"></div><div class="swatch-label">Black & Gold</div></div>
+      <div class="swatch" onclick="toggleSwatch(this,'q7')"><div class="swatch-dot" style="background:linear-gradient(135deg,#fff,#F5EDE0)"></div><div class="swatch-label">White & Cream</div></div>
+      <div class="swatch" onclick="toggleSwatch(this,'q7')"><div class="swatch-dot" style="background:linear-gradient(135deg,#1B3A6B,#7DA7D9)"></div><div class="swatch-label">Navy & Blue</div></div>
+      <div class="swatch" onclick="toggleSwatch(this,'q7')"><div class="swatch-dot" style="background:linear-gradient(135deg,#8B5E3C,#D4A07A)"></div><div class="swatch-label">Earthy Tones</div></div>
+      <div class="swatch" onclick="toggleSwatch(this,'q7')"><div class="swatch-dot" style="background:linear-gradient(135deg,#C0392B,#8E44AD)"></div><div class="swatch-label">Bold & Vibrant</div></div>
+      <div class="swatch" onclick="toggleSwatch(this,'q7')"><div class="swatch-dot" style="background:linear-gradient(135deg,#2ecc71,#16a085)"></div><div class="swatch-label">Green & Teal</div></div>
+      <div class="swatch" onclick="toggleSwatch(this,'q7')"><div class="swatch-dot" style="background:linear-gradient(135deg,#F8BBD0,#CE93D8)"></div><div class="swatch-label">Pink & Purple</div></div>
+      <div class="swatch" onclick="toggleSwatch(this,'q7')"><div class="swatch-dot" style="background:linear-gradient(135deg,#ddd,#aaa)"></div><div class="swatch-label">Open to Suggestions</div></div>
     </div>
   </div>
 
@@ -382,11 +396,10 @@
 
   <div class="field-group">
     <div class="field-label">Websites you love the look of</div>
-    <div class="field-hint">List 1–3 websites whose design inspires you (optional)</div>
     <input type="text" id="q9" placeholder="e.g. fiverr.com, thumbtack.com, airbnb.com" oninput="updateProgress()">
   </div>
 
-  <!-- SECTION 3 -->
+  <!-- SECTION 3 - Images -->
   <div class="section-header">
     <div class="section-number">3</div>
     <div class="section-title">Images & Media</div>
@@ -397,10 +410,9 @@
     <div class="field-label">Where will website images come from? <span class="req">*</span></div>
     <div class="options-grid" id="q10">
       <label class="option-item" onclick="toggleRadio(this,'q10')"><div class="custom-radio"></div><div class="option-text">I will provide my own photos</div></label>
-      <label class="option-item" onclick="toggleRadio(this,'q10')"><div class="custom-radio"></div><div class="option-text">Use free stock images (Unsplash, Pexels)</div></label>
+      <label class="option-item" onclick="toggleRadio(this,'q10')"><div class="custom-radio"></div><div class="option-text">Use free stock images</div></label>
       <label class="option-item" onclick="toggleRadio(this,'q10')"><div class="custom-radio"></div><div class="option-text">Use AI-generated images</div></label>
       <label class="option-item" onclick="toggleRadio(this,'q10')"><div class="custom-radio"></div><div class="option-text">Mix of stock + AI images</div></label>
-      <label class="option-item" onclick="toggleRadio(this,'q10')"><div class="custom-radio"></div><div class="option-text">Not sure — suggest what works best</div></label>
     </div>
   </div>
 
@@ -410,7 +422,6 @@
       <label class="option-item" onclick="toggleRadio(this,'q11')"><div class="custom-radio"></div><div class="option-text">Yes, I have high-quality photos ready</div></label>
       <label class="option-item" onclick="toggleRadio(this,'q11')"><div class="custom-radio"></div><div class="option-text">Yes, but the quality isn't great</div></label>
       <label class="option-item" onclick="toggleRadio(this,'q11')"><div class="custom-radio"></div><div class="option-text">No, I don't have any photos</div></label>
-      <label class="option-item" onclick="toggleRadio(this,'q11')"><div class="custom-radio"></div><div class="option-text">I will get photos later</div></label>
     </div>
   </div>
 
@@ -423,7 +434,7 @@
     </div>
   </div>
 
-  <!-- SECTION 4 -->
+  <!-- SECTION 4 - Landing Page -->
   <div class="section-header">
     <div class="section-number">4</div>
     <div class="section-title">Landing Page Sections</div>
@@ -432,45 +443,26 @@
 
   <div class="field-group">
     <div class="field-label">Which sections do you want on the landing page? <span class="req">*</span></div>
-    <div class="field-hint">Select everything you want included</div>
     <div class="options-grid two-col" id="q13">
       <label class="option-item" onclick="toggleCheck(this,'q13')"><div class="custom-check"></div><div class="option-text">Hero / Banner section</div></label>
       <label class="option-item" onclick="toggleCheck(this,'q13')"><div class="custom-check"></div><div class="option-text">"How It Works" steps</div></label>
       <label class="option-item" onclick="toggleCheck(this,'q13')"><div class="custom-check"></div><div class="option-text">Featured Tailors showcase</div></label>
-      <label class="option-item" onclick="toggleCheck(this,'q13')"><div class="custom-check"></div><div class="option-text">Services / Categories</div></label>
       <label class="option-item" onclick="toggleCheck(this,'q13')"><div class="custom-check"></div><div class="option-text">Testimonials / Reviews</div></label>
-      <label class="option-item" onclick="toggleCheck(this,'q13')"><div class="custom-check"></div><div class="option-text">About Us / Our Story</div></label>
-      <label class="option-item" onclick="toggleCheck(this,'q13')"><div class="custom-check"></div><div class="option-text">Search bar for tailors</div></label>
       <label class="option-item" onclick="toggleCheck(this,'q13')"><div class="custom-check"></div><div class="option-text">Call-to-Action banner</div></label>
-      <label class="option-item" onclick="toggleCheck(this,'q13')"><div class="custom-check"></div><div class="option-text">Newsletter signup</div></label>
-      <label class="option-item" onclick="toggleCheck(this,'q13')"><div class="custom-check"></div><div class="option-text">Social media links / icons</div></label>
       <label class="option-item" onclick="toggleCheck(this,'q13')"><div class="custom-check"></div><div class="option-text">FAQ section</div></label>
-      <label class="option-item" onclick="toggleCheck(this,'q13')"><div class="custom-check"></div><div class="option-text">Footer with links</div></label>
     </div>
   </div>
 
   <div class="field-group">
-    <div class="field-label">Main action you want visitors to take on the landing page <span class="req">*</span></div>
+    <div class="field-label">Main action you want visitors to take <span class="req">*</span></div>
     <div class="options-grid" id="q14">
       <label class="option-item" onclick="toggleRadio(this,'q14')"><div class="custom-radio"></div><div class="option-text">Sign up as a client</div></label>
       <label class="option-item" onclick="toggleRadio(this,'q14')"><div class="custom-radio"></div><div class="option-text">Sign up as a tailor</div></label>
       <label class="option-item" onclick="toggleRadio(this,'q14')"><div class="custom-radio"></div><div class="option-text">Browse tailors</div></label>
-      <label class="option-item" onclick="toggleRadio(this,'q14')"><div class="custom-radio"></div><div class="option-text">Book a tailor directly</div></label>
-      <label class="option-item" onclick="toggleRadio(this,'q14')"><div class="custom-radio"></div><div class="option-text">Contact me first</div></label>
     </div>
   </div>
 
-  <div class="field-group">
-    <div class="field-label">Do you want two separate sign-up flows? <span class="req">*</span></div>
-    <div class="field-hint">e.g. "I'm a Client" button vs "I'm a Tailor" button on the homepage</div>
-    <div class="options-grid" id="q15">
-      <label class="option-item" onclick="toggleRadio(this,'q15')"><div class="custom-radio"></div><div class="option-text">Yes — separate flows for clients and tailors</div></label>
-      <label class="option-item" onclick="toggleRadio(this,'q15')"><div class="custom-radio"></div><div class="option-text">No — one general sign-up</div></label>
-      <label class="option-item" onclick="toggleRadio(this,'q15')"><div class="custom-radio"></div><div class="option-text">Not sure</div></label>
-    </div>
-  </div>
-
-  <!-- SECTION 5 -->
+  <!-- SECTION 5 - Features -->
   <div class="section-header">
     <div class="section-number">5</div>
     <div class="section-title">Features & Functionality</div>
@@ -478,136 +470,44 @@
   </div>
 
   <div class="field-group">
-    <div class="field-label">Which features do you want on the website? <span class="req">*</span></div>
-    <div class="field-hint">Select all that apply — we'll fit them within the $890 budget</div>
-    <div class="options-grid two-col" id="q16">
-      <label class="option-item" onclick="toggleCheck(this,'q16')"><div class="custom-check"></div><div class="option-text">Tailor profile pages</div></label>
-      <label class="option-item" onclick="toggleCheck(this,'q16')"><div class="custom-check"></div><div class="option-text">Client profile pages</div></label>
-      <label class="option-item" onclick="toggleCheck(this,'q16')"><div class="custom-check"></div><div class="option-text">Search & filter tailors</div></label>
-      <label class="option-item" onclick="toggleCheck(this,'q16')"><div class="custom-check"></div><div class="option-text">Booking / appointment system</div></label>
-      <label class="option-item" onclick="toggleCheck(this,'q16')"><div class="custom-check"></div><div class="option-text">Messaging between users</div></label>
-      <label class="option-item" onclick="toggleCheck(this,'q16')"><div class="custom-check"></div><div class="option-text">Review & rating system</div></label>
-      <label class="option-item" onclick="toggleCheck(this,'q16')"><div class="custom-check"></div><div class="option-text">Payment processing</div></label>
-      <label class="option-item" onclick="toggleCheck(this,'q16')"><div class="custom-check"></div><div class="option-text">Admin dashboard</div></label>
-      <label class="option-item" onclick="toggleCheck(this,'q16')"><div class="custom-check"></div><div class="option-text">Email notifications</div></label>
-      <label class="option-item" onclick="toggleCheck(this,'q16')"><div class="custom-check"></div><div class="option-text">WhatsApp / phone button</div></label>
-      <label class="option-item" onclick="toggleCheck(this,'q16')"><div class="custom-check"></div><div class="option-text">Social media login</div></label>
-      <label class="option-item" onclick="toggleCheck(this,'q16')"><div class="custom-check"></div><div class="option-text">Blog / News section</div></label>
+    <div class="field-label">Which features do you want? <span class="req">*</span></div>
+    <div class="options-grid two-col" id="q15">
+      <label class="option-item" onclick="toggleCheck(this,'q15')"><div class="custom-check"></div><div class="option-text">Tailor profile pages</div></label>
+      <label class="option-item" onclick="toggleCheck(this,'q15')"><div class="custom-check"></div><div class="option-text">Search & filter tailors</div></label>
+      <label class="option-item" onclick="toggleCheck(this,'q15')"><div class="custom-check"></div><div class="option-text">Booking / appointment system</div></label>
+      <label class="option-item" onclick="toggleCheck(this,'q15')"><div class="custom-check"></div><div class="option-text">Review & rating system</div></label>
+      <label class="option-item" onclick="toggleCheck(this,'q15')"><div class="custom-check"></div><div class="option-text">WhatsApp / phone button</div></label>
     </div>
   </div>
 
-  <div class="field-group">
-    <div class="field-label">Will tailors pay to be listed on the platform? <span class="req">*</span></div>
-    <div class="options-grid" id="q17">
-      <label class="option-item" onclick="toggleRadio(this,'q17')"><div class="custom-radio"></div><div class="option-text">Yes — monthly subscription fee</div></label>
-      <label class="option-item" onclick="toggleRadio(this,'q17')"><div class="custom-radio"></div><div class="option-text">Yes — commission per booking</div></label>
-      <label class="option-item" onclick="toggleRadio(this,'q17')"><div class="custom-radio"></div><div class="option-text">No — it's free for tailors</div></label>
-      <label class="option-item" onclick="toggleRadio(this,'q17')"><div class="custom-radio"></div><div class="option-text">Not decided yet</div></label>
-    </div>
-  </div>
-
-  <!-- SECTION 6 -->
+  <!-- SECTION 6 - Timeline -->
   <div class="section-header">
     <div class="section-number">6</div>
-    <div class="section-title">Content & Language</div>
-    <div class="section-line"></div>
-  </div>
-
-  <div class="field-group">
-    <div class="field-label">Who will write the website text (copy)? <span class="req">*</span></div>
-    <div class="options-grid" id="q18">
-      <label class="option-item" onclick="toggleRadio(this,'q18')"><div class="custom-radio"></div><div class="option-text">I will write all the text myself</div></label>
-      <label class="option-item" onclick="toggleRadio(this,'q18')"><div class="custom-radio"></div><div class="option-text">I need help writing the text</div></label>
-      <label class="option-item" onclick="toggleRadio(this,'q18')"><div class="custom-radio"></div><div class="option-text">I have some content but need it polished</div></label>
-    </div>
-  </div>
-
-  <div class="field-group">
-    <div class="field-label">Language(s) the website should support <span class="req">*</span></div>
-    <div class="options-grid" id="q19">
-      <label class="option-item" onclick="toggleCheck(this,'q19')"><div class="custom-check"></div><div class="option-text">English only</div></label>
-      <label class="option-item" onclick="toggleCheck(this,'q19')"><div class="custom-check"></div><div class="option-text">Swahili + English</div></label>
-      <label class="option-item" onclick="toggleCheck(this,'q19')"><div class="custom-check"></div><div class="option-text">French</div></label>
-      <label class="option-item" onclick="toggleCheck(this,'q19')"><div class="custom-check"></div><div class="option-text">Other</div></label>
-    </div>
-  </div>
-
-  <!-- SECTION 7 -->
-  <div class="section-header">
-    <div class="section-number">7</div>
-    <div class="section-title">Technical & Hosting</div>
-    <div class="section-line"></div>
-  </div>
-
-  <div class="field-group">
-    <div class="field-label">Do you have a domain name already? <span class="req">*</span></div>
-    <div class="field-hint">A domain is your website address, e.g. tailormatch.com</div>
-    <div class="options-grid" id="q20">
-      <label class="option-item" onclick="toggleRadio(this,'q20')"><div class="custom-radio"></div><div class="option-text">Yes, I already have a domain</div></label>
-      <label class="option-item" onclick="toggleRadio(this,'q20')"><div class="custom-radio"></div><div class="option-text">No, I need one purchased</div></label>
-      <label class="option-item" onclick="toggleRadio(this,'q20')"><div class="custom-radio"></div><div class="option-text">Not sure what a domain is</div></label>
-    </div>
-  </div>
-
-  <div class="field-group">
-    <div class="field-label">Do you have web hosting already? <span class="req">*</span></div>
-    <div class="options-grid" id="q21">
-      <label class="option-item" onclick="toggleRadio(this,'q21')"><div class="custom-radio"></div><div class="option-text">Yes, I have hosting</div></label>
-      <label class="option-item" onclick="toggleRadio(this,'q21')"><div class="custom-radio"></div><div class="option-text">No, I need hosting set up</div></label>
-      <label class="option-item" onclick="toggleRadio(this,'q21')"><div class="custom-radio"></div><div class="option-text">Not sure what hosting is</div></label>
-    </div>
-  </div>
-
-  <div class="field-group">
-    <div class="field-label">Should the website work well on mobile phones? <span class="req">*</span></div>
-    <div class="options-grid" id="q22">
-      <label class="option-item" onclick="toggleRadio(this,'q22')"><div class="custom-radio"></div><div class="option-text">Yes, must work perfectly on mobile</div></label>
-      <label class="option-item" onclick="toggleRadio(this,'q22')"><div class="custom-radio"></div><div class="option-text">Desktop only is fine for now</div></label>
-      <label class="option-item" onclick="toggleRadio(this,'q22')"><div class="custom-radio"></div><div class="option-text">Both mobile and desktop</div></label>
-    </div>
-  </div>
-
-  <!-- SECTION 8 -->
-  <div class="section-header">
-    <div class="section-number">8</div>
-    <div class="section-title">Timeline & Final Notes</div>
+    <div class="section-title">Timeline</div>
     <div class="section-line"></div>
   </div>
 
   <div class="field-group">
     <div class="field-label">When do you need the website ready? <span class="req">*</span></div>
-    <div class="options-grid" id="q23">
-      <label class="option-item" onclick="toggleRadio(this,'q23')"><div class="custom-radio"></div><div class="option-text">ASAP — within 2 weeks</div></label>
-      <label class="option-item" onclick="toggleRadio(this,'q23')"><div class="custom-radio"></div><div class="option-text">Within 1 month</div></label>
-      <label class="option-item" onclick="toggleRadio(this,'q23')"><div class="custom-radio"></div><div class="option-text">Within 2–3 months</div></label>
-      <label class="option-item" onclick="toggleRadio(this,'q23')"><div class="custom-radio"></div><div class="option-text">No rush — take your time</div></label>
+    <div class="options-grid" id="q16">
+      <label class="option-item" onclick="toggleRadio(this,'q16')"><div class="custom-radio"></div><div class="option-text">ASAP — within 2 weeks</div></label>
+      <label class="option-item" onclick="toggleRadio(this,'q16')"><div class="custom-radio"></div><div class="option-text">Within 1 month</div></label>
+      <label class="option-item" onclick="toggleRadio(this,'q16')"><div class="custom-radio"></div><div class="option-text">Within 2–3 months</div></label>
     </div>
   </div>
 
   <div class="field-group">
-    <div class="field-label">What must you absolutely have on this website?</div>
-    <div class="field-hint">Non-negotiables — things you 100% want included</div>
-    <textarea id="q24" placeholder="e.g. I must have a WhatsApp button, a way for tailors to show their portfolio, pricing ranges..." oninput="updateProgress()"></textarea>
-  </div>
-
-  <div class="field-group">
-    <div class="field-label">What do you absolutely NOT want on this website?</div>
-    <div class="field-hint">Things to avoid completely</div>
-    <textarea id="q25" placeholder="e.g. No dark background, no complicated signup process, no ads..." oninput="updateProgress()"></textarea>
-  </div>
-
-  <div class="field-group">
-    <div class="field-label">Any other ideas, notes, or inspiration?</div>
-    <textarea id="q26" placeholder="Anything else you'd like to share about your vision for this website..." oninput="updateProgress()"></textarea>
+    <div class="field-label">Additional Notes</div>
+    <textarea id="q17" placeholder="Anything else you'd like to share about your vision for this website..." oninput="updateProgress()"></textarea>
   </div>
 
   <div class="submit-section">
-    <button class="submit-btn" onclick="submitForm()">Submit My Answers</button>
-    <div class="submit-note">Your responses will be compiled and sent to your web developer</div>
+    <button class="submit-btn" onclick="submitForm()">✂️ Submit My Answers</button>
+    <div class="submit-note">Your responses will be saved to Google Sheets</div>
   </div>
 </div>
 
-<!-- SUCCESS -->
+<!-- SUCCESS SCREEN -->
 <div class="success-screen" id="successScreen">
   <div class="success-icon">✓</div>
   <h2>All Done!</h2>
@@ -615,7 +515,7 @@
   <div style="margin-top:28px; display:inline-block; background:rgba(201,168,76,0.1); border:1px solid rgba(201,168,76,0.3); border-radius:12px; padding:16px 28px;">
     <div style="font-size:13px; color:var(--muted);">What happens next</div>
     <div style="font-size:14px; color:var(--dark); margin-top:8px; line-height:1.8;">
-      📋 &nbsp;Your answers are saved<br>
+      📋 &nbsp;Your answers are saved to Google Sheets<br>
       🗂️ &nbsp;Developer reviews your brief<br>
       📞 &nbsp;You will be contacted within 24hrs
     </div>
@@ -636,14 +536,19 @@
   }
   
   function toggleSwatch(el, groupId) {
-    el.classList.toggle('selected');
+    const swatch = el;
+    if (swatch.classList.contains('selected')) {
+      swatch.classList.remove('selected');
+    } else {
+      swatch.classList.add('selected');
+    }
     updateProgress();
   }
   
   function updateProgress() {
     const textReq = ['q1','q3','q5'];
-    const radioReq = ['q6','q10','q11','q12','q14','q15','q17','q18','q20','q21','q22','q23'];
-    const checkReq = ['q4','q8','q13','q16','q19'];
+    const radioReq = ['q6','q10','q11','q12','q14','q16'];
+    const checkReq = ['q4','q8','q13','q15'];
     const swatchReq = ['q7'];
     let filled = 0;
     const total = textReq.length + radioReq.length + checkReq.length + swatchReq.length;
@@ -654,8 +559,10 @@
     swatchReq.forEach(id => { if(document.getElementById(id).querySelector('.selected')) filled++; });
     
     const pct = Math.round((filled/total)*100);
-    document.getElementById('progressFill').style.width = pct+'%';
-    document.getElementById('progressText').textContent = pct+'% Complete';
+    const progressFill = document.getElementById('progressFill');
+    const progressText = document.getElementById('progressText');
+    if (progressFill) progressFill.style.width = pct+'%';
+    if (progressText) progressText.textContent = pct+'% Complete';
   }
   
   function getSelections(id) {
@@ -667,7 +574,8 @@
   
   async function submitForm() {
     // Hide any previous error messages
-    document.getElementById('errorMessage').style.display = 'none';
+    const errorDiv = document.getElementById('errorMessage');
+    errorDiv.style.display = 'none';
     
     // Validate required fields
     const missing = ['q1','q3','q5'].filter(id => !document.getElementById(id).value.trim());
@@ -678,145 +586,136 @@
           document.getElementById(id).style.borderColor = '';
         }, 3000);
       });
-      showError('Please fill in the required fields marked with *');
+      errorDiv.textContent = 'Please fill in the required fields marked with *';
+      errorDiv.style.display = 'block';
       return;
     }
     
     // Collect all data
     const formData = {
-      submittedAt: new Date().toLocaleString(),
+      timestamp: new Date().toLocaleString(),
       websiteName: document.getElementById('q1').value,
-      tagline: document.getElementById('q2').value || 'Not provided',
+      tagline: document.getElementById('q2').value || '',
       description: document.getElementById('q3').value,
       targetAudience: getSelections('q4'),
       location: document.getElementById('q5').value,
       hasLogo: getSelections('q6'),
       colorTheme: getSelections('q7'),
       feeling: getSelections('q8'),
-      inspirationSites: document.getElementById('q9').value || 'Not provided',
+      inspirationSites: document.getElementById('q9').value || '',
       imageSource: getSelections('q10'),
       hasPhotos: getSelections('q11'),
       wantsVideo: getSelections('q12'),
       sectionsWanted: getSelections('q13'),
       primaryCTA: getSelections('q14'),
-      separateSignup: getSelections('q15'),
-      featuresWanted: getSelections('q16'),
-      monetization: getSelections('q17'),
-      contentWriter: getSelections('q18'),
-      languages: getSelections('q19'),
-      hasDomain: getSelections('q20'),
-      hasHosting: getSelections('q21'),
-      mobileResponsive: getSelections('q22'),
-      deadline: getSelections('q23'),
-      mustHave: document.getElementById('q24').value || 'Not provided',
-      mustNotHave: document.getElementById('q25').value || 'Not provided',
-      otherNotes: document.getElementById('q26').value || 'Not provided'
+      featuresWanted: getSelections('q15'),
+      deadline: getSelections('q16'),
+      otherNotes: document.getElementById('q17').value || ''
     };
     
-    // ⚠️ IMPORTANT: Replace this URL with your actual Google Apps Script URL
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzHWAdTWxK4dqyQ3V5DruM5EteNMCH7AoadKz4L8Qk0QmFafYqniCL0kUByjpQ12w0VYQ/exec';
+    // ========== IMPORTANT: SETUP INSTRUCTIONS ==========
+    // 1. Go to https://sheet.best
+    // 2. Sign in with Google
+    // 3. Click "New Connection" and select your Google Sheet
+    // 4. Copy the API URL you get
+    // 5. Replace the URL below with your actual Sheet.best URL
+    // 
+    // The headers will be created AUTOMATICALLY on first submission!
+    // ===================================================
+    
+    const SHEET_BEST_URL = 'https://api.sheetbest.com/sheets/d5d65f42-6026-4ab0-a7e3-2fdcc086d343';
     
     const btn = document.querySelector('.submit-btn');
     const originalText = btn.textContent;
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    
     btn.textContent = '⏳ Sending...';
     btn.disabled = true;
+    loadingOverlay.style.display = 'flex';
     
     try {
-      // Method 1: Using fetch
-      const response = await fetch(SCRIPT_URL, {
+      // First, try to submit the data
+      const response = await fetch(SHEET_BEST_URL, {
         method: 'POST',
-        mode: 'no-cors',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData)
       });
       
-      // Show success screen
-      document.getElementById('formContainer').style.display = 'none';
-      document.getElementById('successScreen').style.display = 'block';
-      
-      // Optional: Save to localStorage as backup
-      saveToLocalStorage(formData);
-      
-    } catch(error) {
-      console.error('Submission error:', error);
-      
-      // Try fallback method with form submission
-      try {
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = SCRIPT_URL;
-        form.target = 'hidden_iframe';
-        
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'data';
-        input.value = JSON.stringify(formData);
-        form.appendChild(input);
-        
-        let iframe = document.getElementById('hidden_iframe');
-        if (!iframe) {
-          iframe = document.createElement('iframe');
-          iframe.name = 'hidden_iframe';
-          iframe.id = 'hidden_iframe';
-          iframe.style.display = 'none';
-          document.body.appendChild(iframe);
-        }
-        
-        document.body.appendChild(form);
-        form.submit();
-        document.body.removeChild(form);
-        
+      if (response.ok) {
+        // Success! Show thank you screen
+        loadingOverlay.style.display = 'none';
         document.getElementById('formContainer').style.display = 'none';
         document.getElementById('successScreen').style.display = 'block';
         
-        // Save backup
-        saveToLocalStorage(formData);
-        
-      } catch(fallbackError) {
-        console.error('Fallback also failed:', fallbackError);
-        showError('Unable to submit form. Your data has been saved locally. Please check your internet connection and try again.');
-        btn.textContent = originalText;
-        btn.disabled = false;
+        // Clear saved data
+        localStorage.removeItem('formAutoSave');
+        localStorage.removeItem('formBackup');
+      } else {
+        const errorText = await response.text();
+        throw new Error(`Server responded with ${response.status}: ${errorText}`);
       }
+      
+    } catch(error) {
+      console.error('Submission error:', error);
+      loadingOverlay.style.display = 'none';
+      
+      // Show error message with helpful instructions
+      errorDiv.innerHTML = `
+        <strong>⚠️ Unable to submit form</strong><br><br>
+        Error: ${error.message}<br><br>
+        <strong>Setup Instructions:</strong><br>
+        1. Go to <a href="https://sheet.best" target="_blank">sheet.best</a> and sign in with Google<br>
+        2. Create a new connection to your Google Sheet<br>
+        3. Copy your API URL<br>
+        4. Replace the SHEET_BEST_URL in the code with your URL<br><br>
+        <strong>Your data has been saved locally and can be submitted later.</strong>
+      `;
+      errorDiv.style.display = 'block';
+      btn.textContent = originalText;
+      btn.disabled = false;
+      
+      // Save to localStorage as backup
+      localStorage.setItem('formBackup', JSON.stringify(formData));
     }
   }
   
-  function showError(message) {
-    const errorDiv = document.getElementById('errorMessage');
-    errorDiv.textContent = message;
-    errorDiv.style.display = 'block';
-    setTimeout(() => {
-      errorDiv.style.display = 'none';
-    }, 5000);
-  }
-  
-  function saveToLocalStorage(data) {
-    // Save as backup in case submission fails
-    let submissions = JSON.parse(localStorage.getItem('formSubmissions') || '[]');
-    submissions.push(data);
-    localStorage.setItem('formSubmissions', JSON.stringify(submissions));
+  // Function to restore backed up data
+  function restoreBackup() {
+    const backup = localStorage.getItem('formBackup');
+    if (backup) {
+      const data = JSON.parse(backup);
+      if (confirm('Found unsaved form data. Restore it?')) {
+        // This would need to map back to form fields
+        console.log('Backup found:', data);
+        alert('Backup found. Please contact support to restore your data.');
+      }
+    }
   }
   
   // Auto-save progress every 30 seconds
   setInterval(() => {
     if (document.getElementById('formContainer').style.display !== 'none') {
-      const formData = {
-        timestamp: new Date().toLocaleString(),
+      const autoSaveData = {
         q1: document.getElementById('q1')?.value,
         q2: document.getElementById('q2')?.value,
         q3: document.getElementById('q3')?.value,
         q5: document.getElementById('q5')?.value,
-        // Add more fields as needed
+        q9: document.getElementById('q9')?.value,
+        q17: document.getElementById('q17')?.value,
+        savedAt: new Date().toLocaleString()
       };
-      localStorage.setItem('autoSave', JSON.stringify(formData));
+      localStorage.setItem('formAutoSave', JSON.stringify(autoSaveData));
     }
   }, 30000);
   
   // Load auto-saved data on page load
   window.addEventListener('DOMContentLoaded', () => {
-    const saved = localStorage.getItem('autoSave');
+    updateProgress();
+    restoreBackup();
+    
+    const saved = localStorage.getItem('formAutoSave');
     if (saved) {
       const data = JSON.parse(saved);
       if (data.q1 && confirm('Load previously saved form data?')) {
@@ -824,6 +723,8 @@
         if (data.q2) document.getElementById('q2').value = data.q2;
         if (data.q3) document.getElementById('q3').value = data.q3;
         if (data.q5) document.getElementById('q5').value = data.q5;
+        if (data.q9) document.getElementById('q9').value = data.q9;
+        if (data.q17) document.getElementById('q17').value = data.q17;
         updateProgress();
       }
     }
