@@ -235,32 +235,8 @@
   .success-screen h2 { font-family: 'Playfair Display', serif; font-size: 28px; margin-bottom: 12px; }
   .success-screen p { color: var(--muted); font-size: 15px; max-width: 400px; margin: 0 auto; }
 
-  .results-box {
-    background: var(--dark);
-    border-radius: 12px;
-    padding: 24px;
-    margin-top: 28px;
-    text-align: left;
-    max-height: 320px;
-    overflow-y: auto;
-    max-width: 700px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  .results-box pre { font-size: 12px; color: rgba(255,255,255,0.75); white-space: pre-wrap; word-break: break-word; line-height: 1.7; }
-  .copy-btn {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: rgba(201,168,76,0.15);
-    border: 1px solid var(--gold);
-    color: var(--gold);
-    padding: 10px 24px;
-    border-radius: 20px;
-    font-size: 13px; cursor: pointer;
-    margin-top: 14px;
-    font-family: 'DM Sans', sans-serif;
-    transition: background 0.2s;
-  }
-  .copy-btn:hover { background: rgba(201,168,76,0.25); }
+
+
 
   @media (max-width: 520px) {
     .options-grid.two-col { grid-template-columns: 1fr; }
@@ -775,13 +751,10 @@ Budget: $890 | Project: Landing Page First
     })
     .then(() => {
       // Also store answers text for display
-      document.getElementById('resultsText').textContent = answers;
       document.getElementById('formContainer').style.display = 'none';
       document.getElementById('successScreen').style.display = 'block';
     })
     .catch(() => {
-      // Even if fetch fails silently (no-cors), show success & display answers
-      document.getElementById('resultsText').textContent = answers;
       document.getElementById('formContainer').style.display = 'none';
       document.getElementById('successScreen').style.display = 'block';
     });
@@ -790,4 +763,4 @@ Budget: $890 | Project: Landing Page First
 
 </script>
 </body>
-</html>
+</html>a
